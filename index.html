@@ -108,42 +108,34 @@
       sendResults();
     }
 
-    // 📤 Envoi Subabase
-     
-
-     async function sendResults() {
-  const url = "https://szuhjgqkzydbyivhjbiw.supabase.co"; // Mets l’URL Subabase
-  const apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6dWhqZ3FrenlkYnlpdmhqYml3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NjQ4MzIsImV4cCI6MjA3MTU0MDgzMn0.NAAD0XlmWaTadGytuYcvsnyypk9Tyn5KVpUTOrUQNrU"; // Mets la clé API publique
+    // 📤 Envoi Google Sheet
+    async function sendResults() {
+  const url = "https://script.google.com/macros/s/AKfycbyNYRwgrRqC5pA8Wbuc3iAQIqvsXmAACQzHJiQRSmqzsW7-9rCPFrEMSGp8XYQjkDeT8g/exec"; // l'URL que tu as copié
 
   for (const row of answers) {
-    const response = await fetch(url, {
+    await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": apiKey,
-        "Authorization": "Bearer " + apiKey,
-        "Prefer": "return=minimal" // évite que Subabase renvoie toute la ligne
-      },
       body: JSON.stringify({
         question: row.question,
         reponse: row.response,
         date: new Date().toISOString()
-      })
+      }),
+      headers: { "Content-Type": "application/json" }
     });
-
-    if (!response.ok) {
-      console.error("❌ Erreur :", await response.text());
-    }
   }
 
-  console.log("✅ Réponses enregistrées dans Subabase");
+  alert("✅ Réponses envoyées dans Google Sheets !");
 }
 
+     
+
+   
     // 🚀 Démarrage
     showImage();
   </script>
 </body>
 </html>
+
 
 
 
