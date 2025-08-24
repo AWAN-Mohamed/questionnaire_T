@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Questionnaire Emballages Alimentaires</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    .question { display: none; margin: 20px; }
+    .hidden { display: none; }
+    .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+    img { max-width: 400px; margin: 20px 0; }
+    button { margin-top: 10px; padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Questionnaire : Emballages Alimentaires</h1>
+
+  <!-- Zone image -->
+  <div id="image-container" class="question">
+    <h2>Regardez attentivement l'image</h2>
+    <img id="image" src="">
+  </div>
+
+  <!-- Zone question -->
+  <div id="question-container" class="question">
+    <h2 id="question-text"></h2>
+    <form id="answer-form">
+      <div id="options"></div>
+      <button type="submit">Valider</button>
+    </form>
+  </div>
+
+  <!-- Résultats -->
+  <div id="results" class="result hidden">
+    <h2>Merci d'avoir répondu ✅</h2>
+    <p>Vos réponses ont été envoyées.</p>
+    <ul id="answers-list"></ul>
+  </div>
+
+  <script>
+    // 📌 Liste des questions + images
+    const quiz = [
+      { image: "emballage1.jpg", question: "Quel produit était emballé ?", options: ["Biscuits", "Chocolat", "Chips"] },
+      { image: "emballage2.jpg", question: "De quelle matière est l'emballage ?", options: ["Plastique", "Carton", "Métal"] },
+      { image: "emballage3.jpg", question: "Quelle était la couleur dominante ?", options: ["Rouge", "Vert", "Bleu"] },
+      { image: "emballage4.jpg", question: "S'agit-il d'un produit sucré ou salé ?", options: ["Sucré", "Salé"] },
+      { image: "emballage5.jpg", question: "Ce produit est destiné principalement aux ?", options: ["Enfants", "Adultes", "Tous"] },
+      { image: "emballage6.jpg", question: "Le produit est :", options: ["Boisson", "Snack", "Plat préparé"] },
+      { image: "emballage7.jpg", question: "Quel logo apparaissait sur l’emballage ?", options: ["Bio", "Sans gluten", "Vegan"] },
+      { image: "emballage8.jpg", question: "Cet emballage est-il recyclable ?", options: ["Oui", "Non", "Je ne sais pas"] },
+      { image: "emballage9.jpg", question: "Quelle marque était visible ?", options: ["Coca-Cola", "Nestlé", "Pepsi"] },
+      { image: "emballage10.jpg", question: "À quelle catégorie appartient ce produit ?", options: ["Boisson gazeuse", "Produit laitier", "Confiserie"] }
+    ];
+
+    let current = 0;
+    let answers = [];
+
+    const imageContainer = document.getElementById("image-container");
+    const questionContainer = document.getElementById("question-container");
+    const imageElement = document.getElementById("image");
+    const questionText = document.getElementById("question-text");
+    const optionsDiv = document.getElementById("options");
+    const form = document.getElementById("answer-form");
+    const results = document.getElementById("results");
+    const answersList = document.getElementById("answers-list");
+
+    function showImage() {
+      imageElement.src = quiz[current].image;
+      imageContainer.style.display = "block";
+      questionContainer.style.display = "none";
+      setTimeout(showQuestion, 5000);
+    }
+
+    function showQuestion() {
+      imageContainer.style.display = "none";
+      questionContainer.style.display = "block";
+      questionText.textContent = quiz[current].question;
+      optionsDiv.innerHTML = "";
+      quiz[current].options.forEach(opt => {
+        optionsDiv.innerHTML += `
+          <label>
+            <input type="radio" name="answer" value="${opt}" required> ${opt}
+          </label><br>`;
+      });
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const answer = form.answer.value;
+      answers.push({ question: quiz[current].question, response: answer });
+
+      current++;
+      if (current < quiz.length) {
+        showImage();
+      } else {
+        showResults();
+      }
+    });
+
+    function showResults() {
+      questionContainer.style.display = "none";
+      results.classList.remove("hidden");
+      answers.forEach(a => {
+        const li = document.createElement("li");
+        li.textContent = `${a.question} → ${a.response}`;
+        answersList.appendChild(li);
+      });
+      sendResults();
+    }
+
+    // 📤 Envoi Subabase
+    async function sendResults() {
+      const url = "https://szuhjgqkzydbyivhjbiw.supabase.co"; // ⚠️ Mets ton URL Subabase
+      const apiKey = "sb_publishable_K_Auz__68UDQ40B_zrD6yQ_rBcQPJ8c"; // ⚠️ Mets ta clé API anonyme
+
+      for (const row of answers) {
+        await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": apiKey,
+            "Authorization": "Bearer " + apiKey
+          },
+          body: JSON.stringify({
+            question: row.question,
+            reponse: row.response,
+            date: new Date().toISOString()
+          })
+        });
+      }
+
+      console.log("Réponses enregistrées dans Subabase ✅");
+    }
+
+    // 🚀 Démarrage
+    showImage();
+  </script>
+</body>
+</html>
