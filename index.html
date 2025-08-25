@@ -68,7 +68,7 @@
       imageElement.src = quiz[current].image;
       imageContainer.style.display = "block";
       questionContainer.style.display = "none";
-      setTimeout(showQuestion, 3000); // 3s avant la question
+      setTimeout(showQuestion, 3000); // 3s avant question
     }
 
     function showQuestion() {
@@ -108,23 +108,24 @@
       sendResults();
     }
 
-    // 📤 Envoi des résultats à Formspree
+    // 📤 Envoi à Formspree
     async function sendResults() {
-      const url = "https://formspree.io/f/xwpnkkzz"; // 🔗 Ton lien Formspree
-      const data = {
-        reponses: answers,
-        date: new Date().toISOString()
-      };
+      const url = "https://formspree.io/f/xwpnkkzz"; // ✅ mets ton URL Formspree ici
 
       try {
-        await fetch(url, {
+        const response = await fetch(url, {
           method: "POST",
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "application/json" }
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reponses: answers })
         });
-        console.log("✅ Réponses envoyées !");
+
+        if (response.ok) {
+          console.log("✅ Réponses envoyées avec succès !");
+        } else {
+          console.error("❌ Erreur Formspree :", response.statusText);
+        }
       } catch (err) {
-        console.error("❌ Erreur lors de l'envoi :", err);
+        console.error("❌ Erreur réseau :", err);
       }
     }
 
@@ -133,3 +134,4 @@
   </script>
 </body>
 </html>
+
