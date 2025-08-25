@@ -113,25 +113,32 @@
 
  
       // 📤 Envoi Google Sheet
-async function sendResults() {
-  const url = "https://script.google.com/macros/s/AKfycbyNYRwgrRqC5pA8Wbuc3iAQIqvsXmAACQzHJiQRSmqzsW7-9rCPFrEMSGp8XYQjkDeT8g/exec"; // ⚠️ mets ton vrai URL Apps Script
+
+
+  async function sendResults() {
+  const url = "https://script.google.com/macros/s/AKfycbyNYRwgrRqC5pA8Wbuc3iAQIqvsXmAACQzHJiQRSmqzsW7-9rCPFrEMSGp8XYQjkDeT8g/exec"; // ⚠️ ton vrai URL Apps Script
 
   const payload = {
     date: new Date().toISOString(),
     reponses: answers
   };
 
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(payload),
-    headers: { "Content-Type": "application/json" }
-  });
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: { "Content-Type": "application/json" }
+    });
 
-  const result = await response.text();
-  console.log("Réponse Google Apps Script :", result);
-
-  alert("✅ Réponses envoyées dans Google Sheets !");
+    const text = await response.text();
+    console.log("Réponse Google Script :", text);
+    alert("✅ Envoi terminé ! Vérifie ton Google Sheet.");
+  } catch (error) {
+    console.error("❌ Erreur réseau :", error);
+    alert("❌ Impossible d’envoyer les réponses (voir console).");
+  }
 }
+
 
 
     // 🚀 Démarrage
@@ -139,6 +146,7 @@ async function sendResults() {
   </script>
 </body>
 </html>
+
 
 
 
