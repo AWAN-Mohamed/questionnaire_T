@@ -110,27 +110,22 @@
 
     // 📤 Envoi vers Google Sheets via formulaire POST
     function sendResults() {
-      const url = "https://script.google.com/macros/s/AKfycbwvKy8qIZWePJHj4EqHZvbKuDgLhWDcklX65lIqeYjlHc-tED8LyxnOiJ3jcCGGjCaK/exec"; // ⚠️ Remplace par ton URL Apps Script
-      const payload = JSON.stringify({ reponses: answers });
+  const url = "https://script.google.com/macros/s/AKfycbyT95790gdrBuhJO2fsUQ4Gr7gI8GNSFBWNtUvQ4p68iOFDyoaglEN3HTgzP6CYIBqBgA/exec"; // ton URL
+  fetch(url, {
+    method: "POST",
+    mode: "cors", // ✅ important
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "data=" + encodeURIComponent(JSON.stringify({ reponses: answers }))
+  })
+  .then(res => res.json())
+  .then(data => console.log("✅ Réponses envoyées :", data))
+  .catch(err => console.error("❌ Erreur réseau :", err));
+}
 
-      // Création d’un formulaire caché
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = url;
-
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = "data";
-      input.value = payload;
-
-      form.appendChild(input);
-      document.body.appendChild(form);
-
-      form.submit(); // 🚀 Envoi direct sans CORS
-    }
 
     // 🚀 Démarrage
     showImage();
   </script>
 </body>
 </html>
+
