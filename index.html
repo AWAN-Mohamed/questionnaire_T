@@ -108,29 +108,25 @@
       sendResults();
     }
 
-    // 📤 Envoi Google Sheet via Apps Script
-    async function sendResults() {
-      const url = "https://script.google.com/macros/s/AKfycbxAz0SyXl5oUsylmsstfCY1lOquq6FDcvNJMF3mo6VLuRdg8xKJF1eZqYEsqHx96Bnqsg/exec"; // <-- remplace TON_ID_EXEC par ton URL
-                 
-      const payload = {
-        date: new Date().toISOString(),
-        reponses: answers
-      };
+    // 📤 Envoi vers Google Sheets via formulaire POST
+    function sendResults() {
+      const url = "https://script.google.com/macros/s/AKfycbwvKy8qIZWePJHj4EqHZvbKuDgLhWDcklX65lIqeYjlHc-tED8LyxnOiJ3jcCGGjCaK/exec"; // ⚠️ Remplace par ton URL Apps Script
+      const payload = JSON.stringify({ reponses: answers });
 
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: { "Content-Type": "application/json" }
-        });
+      // Création d’un formulaire caché
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = url;
 
-        const result = await response.json();
-        console.log("✅ Réponse du serveur :", result);
-        alert("✅ Réponses envoyées dans Google Sheets !");
-      } catch (error) {
-        console.error("❌ Erreur :", error);
-        alert("❌ Erreur lors de l'envoi des réponses");
-      }
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "data";
+      input.value = payload;
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+
+      form.submit(); // 🚀 Envoi direct sans CORS
     }
 
     // 🚀 Démarrage
@@ -138,5 +134,3 @@
   </script>
 </body>
 </html>
-
-
