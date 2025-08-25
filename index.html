@@ -68,7 +68,7 @@
       imageElement.src = quiz[current].image;
       imageContainer.style.display = "block";
       questionContainer.style.display = "none";
-      setTimeout(showQuestion, 5000);
+      setTimeout(showQuestion, 3000); // 3s avant la question
     }
 
     function showQuestion() {
@@ -108,24 +108,28 @@
       sendResults();
     }
 
-    // 📤 Envoi vers Google Sheets via formulaire POST
-    function sendResults() {
-  const url = "https://script.google.com/macros/s/AKfycbyT95790gdrBuhJO2fsUQ4Gr7gI8GNSFBWNtUvQ4p68iOFDyoaglEN3HTgzP6CYIBqBgA/exec"; // ton URL
-  fetch(url, {
-    method: "POST",
-    mode: "cors", // ✅ important
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "data=" + encodeURIComponent(JSON.stringify({ reponses: answers }))
-  })
-  .then(res => res.json())
-  .then(data => console.log("✅ Réponses envoyées :", data))
-  .catch(err => console.error("❌ Erreur réseau :", err));
-}
+    // 📤 Envoi des résultats à Formspree
+    async function sendResults() {
+      const url = "https://formspree.io/f/xwpnkkzz"; // 🔗 Ton lien Formspree
+      const data = {
+        reponses: answers,
+        date: new Date().toISOString()
+      };
 
+      try {
+        await fetch(url, {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "application/json" }
+        });
+        console.log("✅ Réponses envoyées !");
+      } catch (err) {
+        console.error("❌ Erreur lors de l'envoi :", err);
+      }
+    }
 
     // 🚀 Démarrage
     showImage();
   </script>
 </body>
 </html>
-
