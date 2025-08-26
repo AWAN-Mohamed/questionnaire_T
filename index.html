@@ -68,7 +68,7 @@
       imageElement.src = quiz[current].image;
       imageContainer.style.display = "block";
       questionContainer.style.display = "none";
-      setTimeout(showQuestion, 3000); // 3s avant question
+      setTimeout(showQuestion, 5000);
     }
 
     function showQuestion() {
@@ -108,25 +108,25 @@
       sendResults();
     }
 
-    // 📤 Envoi à Formspree
-    async function sendResults() {
-      const url = "https://formspree.io/f/xwpnkkzz"; // ✅ mets ton URL Formspree ici
+    // 📤 Envoi vers Google Sheets via formulaire POST
+    function sendResults() {
+      const url = "https://script.google.com/macros/s/AKfycbzvYqhk4o3tkWfPRWZCOuMeLI50HrKIO18jCA1BYDauJiJCaWUVcue5Wa0bfE_SvfxApA/exec"; // ⚠️ Remplace par ton URL Apps Script
+      const payload = JSON.stringify({ reponses: answers });
 
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ reponses: answers })
-        });
+      // Création d’un formulaire caché
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = url;
 
-        if (response.ok) {
-          console.log("✅ Réponses envoyées avec succès !");
-        } else {
-          console.error("❌ Erreur Formspree :", response.statusText);
-        }
-      } catch (err) {
-        console.error("❌ Erreur réseau :", err);
-      }
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "data";
+      input.value = payload;
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+
+      form.submit(); // 🚀 Envoi direct sans CORS
     }
 
     // 🚀 Démarrage
@@ -134,4 +134,3 @@
   </script>
 </body>
 </html>
-
