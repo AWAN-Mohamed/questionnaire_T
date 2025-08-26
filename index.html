@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <title>Questionnaire Emballages Alimentaires</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-    .question { display: none; margin: 20px; }
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f9f9f9; }
+    h1 { color: #333; }
+    .question { display: none; margin: 20px auto; max-width: 600px; }
     .hidden { display: none; }
-    .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
-    img { max-width: 400px; margin: 20px 0; }
-    button { margin-top: 10px; padding: 10px 20px; font-size: 16px; }
+    .result { margin-top: 20px; padding: 15px; border-radius: 8px; background: #e6ffe6; }
+    img { max-width: 300px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    button { margin-top: 15px; padding: 10px 25px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; background: #007BFF; color: white; }
+    button:hover { background: #0056b3; }
+    label { display: block; margin: 8px 0; text-align: left; }
   </style>
 </head>
 <body>
@@ -34,26 +37,25 @@
   <div id="results" class="result hidden">
     <h2>Merci d'avoir répondu ✅</h2>
     <p>Vos réponses ont été envoyées.</p>
-    <ul id="answers-list"></ul>
   </div>
 
   <script>
     // 📌 Liste des questions + images
     const quiz = [
-      { image: "emballage1.jpg", question: "Quel produit était emballé ?", options: ["Biscuits", "Chocolat", "Chips"] },
-      { image: "emballage2.jpg", question: "De quelle matière est l'emballage ?", options: ["Plastique", "Carton", "Métal"] },
-      { image: "emballage3.jpg", question: "Quelle était la couleur dominante ?", options: ["Rouge", "Vert", "Bleu"] },
-      { image: "emballage4.jpg", question: "S'agit-il d'un produit sucré ou salé ?", options: ["Sucré", "Salé"] },
-      { image: "emballage5.jpg", question: "Ce produit est destiné principalement aux ?", options: ["Enfants", "Adultes", "Tous"] },
-      { image: "emballage6.jpg", question: "Le produit est :", options: ["Boisson", "Snack", "Plat préparé"] },
-      { image: "emballage7.jpg", question: "Quel logo apparaissait sur l’emballage ?", options: ["Bio", "Sans gluten", "Vegan"] },
-      { image: "emballage8.jpg", question: "Cet emballage est-il recyclable ?", options: ["Oui", "Non", "Je ne sais pas"] },
-      { image: "emballage9.jpg", question: "Quelle marque était visible ?", options: ["Coca-Cola", "Nestlé", "Pepsi"] },
-      { image: "emballage10.jpg", question: "À quelle catégorie appartient ce produit ?", options: ["Boisson gazeuse", "Produit laitier", "Confiserie"] }
+      { image: "emballage1.jpg", question: "q1", text: "Quel produit était emballé ?", options: ["Biscuits", "Chocolat", "Chips"] },
+      { image: "emballage2.jpg", question: "q2", text: "De quelle matière est l'emballage ?", options: ["Plastique", "Carton", "Métal"] },
+      { image: "emballage3.jpg", question: "q3", text: "Quelle était la couleur dominante ?", options: ["Rouge", "Vert", "Bleu"] },
+      { image: "emballage4.jpg", question: "q4", text: "S'agit-il d'un produit sucré ou salé ?", options: ["Sucré", "Salé"] },
+      { image: "emballage5.jpg", question: "q5", text: "Ce produit est destiné principalement aux ?", options: ["Enfants", "Adultes", "Tous"] },
+      { image: "emballage6.jpg", question: "q6", text: "Le produit est :", options: ["Boisson", "Snack", "Plat préparé"] },
+      { image: "emballage7.jpg", question: "q7", text: "Quel logo apparaissait sur l’emballage ?", options: ["Bio", "Sans gluten", "Vegan"] },
+      { image: "emballage8.jpg", question: "q8", text: "Cet emballage est-il recyclable ?", options: ["Oui", "Non", "Je ne sais pas"] },
+      { image: "emballage9.jpg", question: "q9", text: "Quelle marque était visible ?", options: ["Coca-Cola", "Nestlé", "Pepsi"] },
+      { image: "emballage10.jpg", question: "q10", text: "À quelle catégorie appartient ce produit ?", options: ["Boisson gazeuse", "Produit laitier", "Confiserie"] }
     ];
 
     let current = 0;
-    let answers = [];
+    let answers = {};
 
     const imageContainer = document.getElementById("image-container");
     const questionContainer = document.getElementById("question-container");
@@ -62,32 +64,31 @@
     const optionsDiv = document.getElementById("options");
     const form = document.getElementById("answer-form");
     const results = document.getElementById("results");
-    const answersList = document.getElementById("answers-list");
 
     function showImage() {
       imageElement.src = quiz[current].image;
       imageContainer.style.display = "block";
       questionContainer.style.display = "none";
-      setTimeout(showQuestion, 5000);
+      setTimeout(showQuestion, 3000);
     }
 
     function showQuestion() {
       imageContainer.style.display = "none";
       questionContainer.style.display = "block";
-      questionText.textContent = quiz[current].question;
+      questionText.textContent = quiz[current].text;
       optionsDiv.innerHTML = "";
       quiz[current].options.forEach(opt => {
         optionsDiv.innerHTML += `
           <label>
             <input type="radio" name="answer" value="${opt}" required> ${opt}
-          </label><br>`;
+          </label>`;
       });
     }
 
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       const answer = form.answer.value;
-      answers.push({ question: quiz[current].question, response: answer });
+      answers[quiz[current].question] = answer;
 
       current++;
       if (current < quiz.length) {
@@ -100,33 +101,20 @@
     function showResults() {
       questionContainer.style.display = "none";
       results.classList.remove("hidden");
-      answers.forEach(a => {
-        const li = document.createElement("li");
-        li.textContent = `${a.question} → ${a.response}`;
-        answersList.appendChild(li);
-      });
       sendResults();
     }
 
-    // 📤 Envoi vers Google Sheets via formulaire POST
+    // 📤 Envoi vers Google Sheets via Apps Script
     function sendResults() {
-      const url = "https://script.google.com/macros/s/AKfycbzvYqhk4o3tkWfPRWZCOuMeLI50HrKIO18jCA1BYDauJiJCaWUVcue5Wa0bfE_SvfxApA/exec"; // ⚠️ Remplace par ton URL Apps Script
-      const payload = JSON.stringify({ reponses: answers });
-
-      // Création d’un formulaire caché
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = url;
-
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = "data";
-      input.value = payload;
-
-      form.appendChild(input);
-      document.body.appendChild(form);
-
-      form.submit(); // 🚀 Envoi direct sans CORS
+      const url = "https://script.google.com/macros/s/AKfycbz0S11Crx1V6lEflmHjX-NG1q6JXFfpkYeGtrCyjZs6lUPOMHxVs-oiGV4bdMMYTIML_g/exec"; // ⚠️ Remplace par ton URL
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(answers)
+      })
+      .then(res => res.json())
+      .then(data => console.log("Réponse du serveur:", data))
+      .catch(err => console.error("Erreur:", err));
     }
 
     // 🚀 Démarrage
