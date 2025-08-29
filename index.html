@@ -4,19 +4,100 @@
   <meta charset="UTF-8">
   <title>Questionnaire Emballages Alimentaires</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f9f9f9; }
-    h1 { color: #333; }
-    .question { display: none; margin: 20px auto; max-width: 600px; }
-    .hidden { display: none; }
-    .result { margin-top: 20px; padding: 15px; border-radius: 8px; background: #e6ffe6; }
-    img { max-width: 300px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    button { margin-top: 15px; padding: 10px 25px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; background: #007BFF; color: white; }
-    button:hover { background: #0056b3; }
-    label { display: block; margin: 8px 0; text-align: left; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #2c3e50;
+    }
+
+    /* 🚀 Barre de progression */
+    .progress-container {
+      width: 100%;
+      background: #ddd;
+      border-radius: 20px;
+      margin: 20px auto;
+      height: 20px;
+      max-width: 600px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #3498db;
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      font-size: 12px;
+      transition: width 0.4s ease;
+    }
+
+    .question {
+      display: none;
+      margin: 30px auto;
+      max-width: 600px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      background: #3498db;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0;
+      text-align: left;
+    }
+
+    .result {
+      margin-top: 40px;
+      padding: 20px;
+      background: #eafaf1;
+      border: 1px solid #2ecc71;
+      border-radius: 12px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>Questionnaire : Emballages Alimentaires</h1>
+
+  <!-- 🚀 Barre de progression -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar">0%</div>
+  </div>
 
   <!-- Zone image -->
   <div id="image-container" class="question">
@@ -40,22 +121,22 @@
   </div>
 
   <script>
-    // 📌 Liste des questions + images
+    // 📌 Questions + images
     const quiz = [
-      { image: "emballage1.jpg", question: "q1", text: "Quel produit était emballé ?", options: ["Biscuits", "Chocolat", "Chips"] },
-      { image: "emballage2.jpg", question: "q2", text: "De quelle matière est l'emballage ?", options: ["Plastique", "Carton", "Métal"] },
-      { image: "emballage3.jpg", question: "q3", text: "Quelle était la couleur dominante ?", options: ["Rouge", "Vert", "Bleu"] },
-      { image: "emballage4.jpg", question: "q4", text: "S'agit-il d'un produit sucré ou salé ?", options: ["Sucré", "Salé"] },
-      { image: "emballage5.jpg", question: "q5", text: "Ce produit est destiné principalement aux ?", options: ["Enfants", "Adultes", "Tous"] },
-      { image: "emballage6.jpg", question: "q6", text: "Le produit est :", options: ["Boisson", "Snack", "Plat préparé"] },
-      { image: "emballage7.jpg", question: "q7", text: "Quel logo apparaissait sur l’emballage ?", options: ["Bio", "Sans gluten", "Vegan"] },
-      { image: "emballage8.jpg", question: "q8", text: "Cet emballage est-il recyclable ?", options: ["Oui", "Non", "Je ne sais pas"] },
-      { image: "emballage9.jpg", question: "q9", text: "Quelle marque était visible ?", options: ["Coca-Cola", "Nestlé", "Pepsi"] },
-      { image: "emballage10.jpg", question: "q10", text: "À quelle catégorie appartient ce produit ?", options: ["Boisson gazeuse", "Produit laitier", "Confiserie"] }
+      { image: "emballage1.jpg", question: "Quel produit était emballé ?", options: ["Biscuits", "Chocolat", "Chips"] },
+      { image: "emballage2.jpg", question: "De quelle matière est l'emballage ?", options: ["Plastique", "Carton", "Métal"] },
+      { image: "emballage3.jpg", question: "Quelle était la couleur dominante ?", options: ["Rouge", "Vert", "Bleu"] },
+      { image: "emballage4.jpg", question: "S'agit-il d'un produit sucré ou salé ?", options: ["Sucré", "Salé"] },
+      { image: "emballage5.jpg", question: "Ce produit est destiné principalement aux ?", options: ["Enfants", "Adultes", "Tous"] },
+      { image: "emballage6.jpg", question: "Le produit est :", options: ["Boisson", "Snack", "Plat préparé"] },
+      { image: "emballage7.jpg", question: "Quel logo apparaissait sur l’emballage ?", options: ["Bio", "Sans gluten", "Vegan"] },
+      { image: "emballage8.jpg", question: "Cet emballage est-il recyclable ?", options: ["Oui", "Non", "Je ne sais pas"] },
+      { image: "emballage9.jpg", question: "Quelle marque était visible ?", options: ["Coca-Cola", "Nestlé", "Pepsi"] },
+      { image: "emballage10.jpg", question: "À quelle catégorie appartient ce produit ?", options: ["Boisson gazeuse", "Produit laitier", "Confiserie"] }
     ];
 
     let current = 0;
-    let answers = {};
+    let answers = [];
 
     const imageContainer = document.getElementById("image-container");
     const questionContainer = document.getElementById("question-container");
@@ -64,18 +145,26 @@
     const optionsDiv = document.getElementById("options");
     const form = document.getElementById("answer-form");
     const results = document.getElementById("results");
+    const progressBar = document.getElementById("progress-bar");
+
+    function updateProgress() {
+      const percent = Math.round(((current) / quiz.length) * 100);
+      progressBar.style.width = percent + "%";
+      progressBar.textContent = percent + "%";
+    }
 
     function showImage() {
+      updateProgress();
       imageElement.src = quiz[current].image;
       imageContainer.style.display = "block";
       questionContainer.style.display = "none";
-      setTimeout(showQuestion, 3000);
+      setTimeout(showQuestion, 3000); // ⏳ 3 secondes d’affichage image
     }
 
     function showQuestion() {
       imageContainer.style.display = "none";
       questionContainer.style.display = "block";
-      questionText.textContent = quiz[current].text;
+      questionText.textContent = quiz[current].question;
       optionsDiv.innerHTML = "";
       quiz[current].options.forEach(opt => {
         optionsDiv.innerHTML += `
@@ -88,7 +177,7 @@
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       const answer = form.answer.value;
-      answers[quiz[current].question] = answer;
+      answers.push({ question: quiz[current].question, response: answer });
 
       current++;
       if (current < quiz.length) {
@@ -100,21 +189,25 @@
 
     function showResults() {
       questionContainer.style.display = "none";
+      progressBar.style.width = "100%";
+      progressBar.textContent = "100%";
       results.classList.remove("hidden");
       sendResults();
     }
 
-    // 📤 Envoi vers Google Sheets via Apps Script
+    // 📤 Envoi vers Google Sheets en JSON
     function sendResults() {
-      const url = "https://script.google.com/macros/s/AKfycbz0S11Crx1V6lEflmHjX-NG1q6JXFfpkYeGtrCyjZs6lUPOMHxVs-oiGV4bdMMYTIML_g/exec"; // ⚠️ Remplace par ton URL
+      const url = "https://script.google.com/macros/s/AKfycbzESo3lNghAOgfq8UADcZD2OFsTTvPdTLYcGl9PWZAkU2SFueAi8o2qvgZEv6XGxtSv_A/exec"; // ⚠️ Remplace par ton URL
+      const responses = answers.map(a => a.response);
+
       fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(answers)
+        body: JSON.stringify({ responses })
       })
       .then(res => res.json())
-      .then(data => console.log("Réponse du serveur:", data))
-      .catch(err => console.error("Erreur:", err));
+      .then(data => console.log("✅ Réponses envoyées :", data))
+      .catch(err => console.error("❌ Erreur envoi :", err));
     }
 
     // 🚀 Démarrage
